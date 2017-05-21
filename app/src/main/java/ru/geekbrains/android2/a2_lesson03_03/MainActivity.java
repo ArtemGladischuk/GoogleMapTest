@@ -209,8 +209,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 			editTextLatitude = (EditText) findViewById(R.id.editTextLatitude);
 			editTextLongitude = (EditText) findViewById(R.id.editTextLongitude);
 
-			// editTextLatitude.setText(String.valueOf(mvMap.getCameraPosition().target.latitude));
-			// editTextLongitude.setText(String.valueOf(mvMap.getCameraPosition().target.longitude));
+			editTextLatitude.setText(String.valueOf(mvMap.getCameraPosition().target.latitude));
+			editTextLongitude.setText(String.valueOf(mvMap.getCameraPosition().target.longitude));
 
 			mDialogNBuilder
 					.setCancelable(false)
