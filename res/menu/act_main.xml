@@ -1,0 +1,62 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!--     	
+    	Options menu for an activity. Prefix for all items should be:    	
+    		act - for any general action into application (can be not unique in app)
+    		menu - for another items (can be not unique in app)
+    		
+    	The main difference between "act" and "menu" is that "act" action is general in the
+    	application (it means that any UI component can be use this id), but "menu" actions
+    	is uses for only menu (in this and other Activities).    	
+    -->
+    
+	<!-- Menu "Map Type" -->
+	<item android:id="@+id/menu_map_mode"
+	    android:showAsAction="always" android:orderInCategory="1"
+	    android:title="@string/menu_map_mode"
+	    android:icon="@android:drawable/ic_menu_mapmode">
+	    
+	   <menu>
+	    
+			<item android:id="@+id/menu_map_mode_normal"
+	    		android:showAsAction="never" android:orderInCategory="1"
+	    		android:title="@string/menu_map_mode_normal"/>
+	    	
+			<item android:id="@+id/menu_map_mode_satellite"
+	    		android:showAsAction="never" android:orderInCategory="2"
+	    		android:title="@string/menu_map_mode_satellite"/>
+			
+			<item android:id="@+id/menu_map_mode_terrain"
+	    		android:showAsAction="never" android:orderInCategory="2"
+	    		android:title="@string/menu_map_mode_terrain"/>				    		    	   
+	    
+	    </menu>
+	    
+	</item>
+	
+	<!-- Menu "Map Traffic" -->
+	<item android:id="@+id/menu_map_traffic"
+	    android:showAsAction="always" android:orderInCategory="2"
+	    android:title="@string/menu_map_traffic"
+	    android:icon="@android:drawable/ic_menu_directions"/>
+	
+	<!-- Menu "My Location" -->
+	<item android:id="@+id/menu_map_location"
+	    android:showAsAction="always" android:orderInCategory="3"
+	    android:title="@string/menu_map_location"
+	    android:icon="@android:drawable/ic_menu_mylocation"/>
+	
+	<!-- Menu "My Location" -->
+	<item android:id="@+id/menu_map_point_new"
+	    android:showAsAction="never" android:orderInCategory="4"
+	    android:title="@string/menu_map_point_new"
+	    android:icon="@android:drawable/ic_menu_mylocation"/>			
+   
+  	<!-- Action "Settings" -->
+	<item android:id="@+id/act_settings"
+    	android:showAsAction="never" android:orderInCategory="100"        
+        android:title="@string/act_settings" 
+        android:icon="@android:drawable/ic_menu_preferences"/>
+
+</menu>
+
