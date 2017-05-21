@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	EditText editTextLatitude = null;
 	EditText editTextLongitude = null;
 
+	public GoogleMap getMvMap() {
+		return mvMap;
+	}
 
 	/**
 	 * Called when the activity is starting (for more details,
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 	}
 
-	private void initAlertDialog(){
+	private void initAlertDialog() {
 		editTextLatitude = (EditText) findViewById(R.id.editTextLatitude);
 		editTextLongitude = (EditText) findViewById(R.id.editTextLongitude);
 	}
@@ -69,20 +72,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	// Загрузка точек из SharedPreferences
 	private void loadPoint() {
 		if (mSettings.contains(APP_PREFERENCES_LATITUDE) &&
-				mSettings.contains(APP_PREFERENCES_LONGITUDE)){
-			latitudesSet  = mSettings.getStringSet(APP_PREFERENCES_LATITUDE, new LinkedHashSet<String>());
+				mSettings.contains(APP_PREFERENCES_LONGITUDE)) {
+			latitudesSet = mSettings.getStringSet(APP_PREFERENCES_LATITUDE, new LinkedHashSet<String>());
 			longitudesSet = mSettings.getStringSet(APP_PREFERENCES_LONGITUDE, new LinkedHashSet<String>());
 
 			String[] lat = latitudesSet.toArray(new String[latitudesSet.size()]);
 			String[] lon = longitudesSet.toArray(new String[longitudesSet.size()]);
 
-			for (int i = 0; i < lat.length && i <lon.length; i++) {
+			for (int i = 0; i < lat.length && i < lon.length; i++) {
 
-			LatLng target = new LatLng(Float.valueOf(lat[i]), Float.valueOf(lon[i]));
-			Log.d("onResume_latitude", String.valueOf(target.latitude));
-			Log.d("onResume_longitude", String.valueOf(target.longitude));
-			makeMarker(target);
-		}
+				LatLng target = new LatLng(Float.valueOf(lat[i]), Float.valueOf(lon[i]));
+				Log.d("onResume_latitude", String.valueOf(target.latitude));
+				Log.d("onResume_longitude", String.valueOf(target.longitude));
+				makeMarker(target);
+			}
 		}
 	}
 
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	private void initUI() {
 
 		/* Get a handle to the Map Fragment and to
-		 * the Map object */
+         * the Map object */
 		mapFragment = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.frMap);
 		mapFragment.getMapAsync(this);
@@ -194,27 +197,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		/* Menu "Add Point" */
 		if (item.getItemId() == R.id.menu_map_point_new) {
 
-//			//Попытки создания диалогового окна с возможностью ввода координат точки.
-//
-//			CustomDialogFragment dialog = new CustomDialogFragment();
-//			dialog.show(getSupportFragmentManager(), "custom");
-//			initAlertDialog();
-//
-//			Float latitude = Float.parseFloat(editTextLatitude.getText().toString());
-//			Float longitude = Float.parseFloat(editTextLongitude.getText().toString());
+			//Попытки создания диалогового окна с возможностью ввода координат точки.
 
-			LatLng target = mvMap.getCameraPosition().target;
+			initAlertDialog();
 
-			makeMarker(target);
-			saveTargetsToSet(target);
+			CustomDialogFragment dialog = new CustomDialogFragment();
+			dialog.show(getSupportFragmentManager(), "custom");
+
+
+
 		}
-
-		/* Invoke a parent method */
 		return super.onOptionsItemSelected(item);
-
 	}
+
+	public void addPoint() {
+
+		Float latitude = Float.valueOf(editTextLatitude.getText().toString());
+		Float longitude = Float.valueOf(editTextLongitude.getText().toString());
+
+		LatLng target = new LatLng(latitude,longitude);
+
+		makeMarker(target);
+		saveTargetsToSet(target);
+	}
+
 	//Создание и добавление маркера на карту
-	private void makeMarker (LatLng target){
+	private void makeMarker(LatLng target) {
 		MarkerOptions marker = new MarkerOptions();
 		marker.icon(null);
 		marker.anchor(0.0f, 0.0f);
