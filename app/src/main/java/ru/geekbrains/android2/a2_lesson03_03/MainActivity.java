@@ -1,14 +1,18 @@
 package ru.geekbrains.android2.a2_lesson03_03;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -36,24 +40,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	private Set<String> latitudesSet = new HashSet<String>();
 	private Set<String> longitudesSet = new HashSet<String>();
 
-	private Float latitude = 0f;
-	private Float longitude = 0f;
-
-	public Float getLatitude() {
-		return latitude;
-	}
-
-	public Float getLongitude() {
-		return longitude;
-	}
-
-	public void setLatitude(Float latitude) {
-		this.latitude = latitude;
-	}
-
-	public void setLongitude(Float longitude) {
-		this.longitude = longitude;
-	}
+	EditText editTextLatitude = null;
+	EditText editTextLongitude = null;
 
 	public GoogleMap getMvMap() {
 		return mvMap;
@@ -207,21 +195,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		/* Menu "Add Point" */
 		if (item.getItemId() == R.id.menu_map_point_new) {
 
-			//Попытки создания диалогового окна с возможностью ввода координат точки.
+			//Создание диалогового окна с возможностью ввода координат точки.
+			LayoutInflater inflater = LayoutInflater.from(this);
+			View dialogView = inflater.inflate(R.layout.dialog, null);
 
-			CustomDialogFragment dialog = new CustomDialogFragment();
-			dialog.show(getSupportFragmentManager(), "custom");
+			//Cоздаем AlertDialog
+			AlertDialog.Builder mDialogNBuilder = new AlertDialog.Builder(this);
+
+			//Прикручиваем лейаут к алерту
+			mDialogNBuilder.setView(dialogView);
+
+			//Инициализация компонентов
+			editTextLatitude = (EditText) findViewById(R.id.editTextLatitude);
+			editTextLongitude = (EditText) findViewById(R.id.editTextLongitude);
+
+			// editTextLatitude.setText(String.valueOf(mvMap.getCameraPosition().target.latitude));
+			// editTextLongitude.setText(String.valueOf(mvMap.getCameraPosition().target.longitude));
+
+			mDialogNBuilder
+					.setCancelable(false)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							LatLng target = new LatLng(Float.valueOf(editTextLatitude.getText().toString()),
+									Float.valueOf(editTextLongitude.getText().toString()));
+
+							makeMarker(target);
+							saveTargetsToSet(target);
+						}
+					});
+			AlertDialog alertDialog = mDialogNBuilder.create();
+			alertDialog.show();
 
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	public void addPoint() {
-
-		LatLng target = new LatLng(latitude,longitude);
-
-		makeMarker(target);
-		saveTargetsToSet(target);
 	}
 
 	//Создание и добавление маркера на карту
