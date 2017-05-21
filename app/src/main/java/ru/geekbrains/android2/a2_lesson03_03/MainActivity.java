@@ -32,13 +32,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	public static final String APP_PREFERENCES = "mysettings";
 	public static final String APP_PREFERENCES_LATITUDE = "myPointLatitude";
 	public static final String APP_PREFERENCES_LONGITUDE = "myPointLongitude";
-	SharedPreferences mSettings = null;
-	Set<String> latitudesSet = new HashSet<String>();
-	Set<String> longitudesSet = new HashSet<String>();
+	private SharedPreferences mSettings = null;
+	private Set<String> latitudesSet = new HashSet<String>();
+	private Set<String> longitudesSet = new HashSet<String>();
 
-	//поля AlertDialog
-	EditText editTextLatitude = null;
-	EditText editTextLongitude = null;
+	private Float latitude = 0f;
+	private Float longitude = 0f;
+
+	public Float getLatitude() {
+		return latitude;
+	}
+
+	public Float getLongitude() {
+		return longitude;
+	}
+
+	public void setLatitude(Float latitude) {
+		this.latitude = latitude;
+	}
+
+	public void setLongitude(Float longitude) {
+		this.longitude = longitude;
+	}
 
 	public GoogleMap getMvMap() {
 		return mvMap;
@@ -62,11 +77,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 		//Инициализируем SharedPreferences
 		mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-	}
-
-	private void initAlertDialog() {
-		editTextLatitude = (EditText) findViewById(R.id.editTextLatitude);
-		editTextLongitude = (EditText) findViewById(R.id.editTextLongitude);
 	}
 
 	// Загрузка точек из SharedPreferences
@@ -199,21 +209,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 			//Попытки создания диалогового окна с возможностью ввода координат точки.
 
-			initAlertDialog();
-
 			CustomDialogFragment dialog = new CustomDialogFragment();
 			dialog.show(getSupportFragmentManager(), "custom");
-
-
 
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	public void addPoint() {
-
-		Float latitude = Float.valueOf(editTextLatitude.getText().toString());
-		Float longitude = Float.valueOf(editTextLongitude.getText().toString());
 
 		LatLng target = new LatLng(latitude,longitude);
 

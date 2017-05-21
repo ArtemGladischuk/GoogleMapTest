@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 public class CustomDialogFragment extends DialogFragment {
     private MainActivity ma = null;
+    EditText editTextLatitude = null;
+    EditText editTextLongitude = null;
 
     @NonNull
     @Override
@@ -18,6 +20,10 @@ public class CustomDialogFragment extends DialogFragment {
         if (getActivity() != null) {
             ma = (MainActivity) getActivity();
         }
+        editTextLatitude = (EditText) ma.findViewById(R.id.editTextLatitude);
+        editTextLongitude = (EditText) ma.findViewById(R.id.editTextLongitude);
+        editTextLatitude.setText(ma.getLatitude().toString());
+        editTextLongitude.setText(ma.getLongitude().toString());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         return builder
@@ -26,8 +32,10 @@ public class CustomDialogFragment extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                        ma.setLatitude(Float.valueOf(editTextLatitude.getText().toString()));
+                        ma.setLongitude(Float.valueOf(editTextLongitude.getText().toString()));
                         ma.addPoint();
+                        dialog.dismiss();
                     }
                 })
                 .create();
