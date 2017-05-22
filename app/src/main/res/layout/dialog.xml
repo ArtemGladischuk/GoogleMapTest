@@ -3,6 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/name_and_loca"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/editTextName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/name"/>
 
     <EditText
         android:id="@+id/editTextLatitude"
@@ -10,16 +22,14 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:hint="@string/latitude"
-        android:text="00"
-        android:inputType="numberSigned" />
+        android:text="00" />
 
     <EditText
         android:id="@+id/editTextLongitude"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="00"
         android:hint="@string/longitude"
-        android:inputType="numberSigned" />
+        android:text="00" />
 
 </LinearLayout>
