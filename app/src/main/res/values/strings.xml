@@ -24,5 +24,7 @@
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="write_point">Введите координаты точки</string>
+    <string name="name_and_loca">Введите название и координаты точки</string>
+    <string name="name">Название</string>
 
 </resources>

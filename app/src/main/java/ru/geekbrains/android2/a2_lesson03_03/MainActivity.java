@@ -36,10 +36,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	public static final String APP_PREFERENCES = "mysettings";
 	public static final String APP_PREFERENCES_LATITUDE = "myPointLatitude";
 	public static final String APP_PREFERENCES_LONGITUDE = "myPointLongitude";
+	public static final String APP_PREFERENCES_NAME = "mayPointName";
+
 	private SharedPreferences mSettings = null;
+
 	private Set<String> latitudesSet = new HashSet<String>();
 	private Set<String> longitudesSet = new HashSet<String>();
+	private Set<String> nameTargetsSet = new HashSet<String>();
 
+	//Поля для алертДиалога
+	EditText editTextName = null;
 	EditText editTextLatitude = null;
 	EditText editTextLongitude = null;
 
@@ -70,19 +76,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	// Загрузка точек из SharedPreferences
 	private void loadPoint() {
 		if (mSettings.contains(APP_PREFERENCES_LATITUDE) &&
-				mSettings.contains(APP_PREFERENCES_LONGITUDE)) {
+				mSettings.contains(APP_PREFERENCES_LONGITUDE) && mSettings.contains(APP_PREFERENCES_NAME)) {
+
+			nameTargetsSet = mSettings.getStringSet(APP_PREFERENCES_NAME, new LinkedHashSet<String>());
 			latitudesSet = mSettings.getStringSet(APP_PREFERENCES_LATITUDE, new LinkedHashSet<String>());
 			longitudesSet = mSettings.getStringSet(APP_PREFERENCES_LONGITUDE, new LinkedHashSet<String>());
 
+			String[] name = nameTargetsSet.toArray(new String[nameTargetsSet.size()]);
 			String[] lat = latitudesSet.toArray(new String[latitudesSet.size()]);
 			String[] lon = longitudesSet.toArray(new String[longitudesSet.size()]);
 
 			for (int i = 0; i < lat.length && i < lon.length; i++) {
 
 				LatLng target = new LatLng(Float.valueOf(lat[i]), Float.valueOf(lon[i]));
+				String nameTarget = name[i];
 				Log.d("onResume_latitude", String.valueOf(target.latitude));
 				Log.d("onResume_longitude", String.valueOf(target.longitude));
-				makeMarker(target);
+				makeMarker(target, nameTarget);
 			}
 		}
 	}
@@ -206,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 			mDialogNBuilder.setView(dialogView);
 
 			//Инициализация компонентов
+			editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
 			editTextLatitude = (EditText) dialogView.findViewById(R.id.editTextLatitude);
 			editTextLongitude = (EditText) dialogView.findViewById(R.id.editTextLongitude);
 
@@ -219,9 +230,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 						public void onClick(DialogInterface dialog, int which) {
 							LatLng target = new LatLng(Float.valueOf(editTextLatitude.getText().toString()),
 									Float.valueOf(editTextLongitude.getText().toString()));
+							String nameTarget = editTextName.getText().toString();
 
-							makeMarker(target);
-							saveTargetsToSet(target);
+							makeMarker(target, nameTarget);
+							saveTargetsToSet(target, nameTarget);
 						}
 					});
 			AlertDialog alertDialog = mDialogNBuilder.create();
@@ -232,13 +244,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	}
 
 	//Создание и добавление маркера на карту
-	private void makeMarker(LatLng target) {
+	private void makeMarker(LatLng target, String nameTarget) {
 		MarkerOptions marker = new MarkerOptions();
 		marker.icon(null);
 		marker.anchor(0.0f, 0.0f);
-		marker.title("Point");
+		marker.title(nameTarget);
 		marker.position(target);
-		marker.draggable(true);
+		marker.draggable(false);
 		mvMap.addMarker(marker);
 	}
 
@@ -249,15 +261,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		SharedPreferences.Editor editor = mSettings.edit();
 		editor.putStringSet(APP_PREFERENCES_LATITUDE, latitudesSet);
 		editor.putStringSet(APP_PREFERENCES_LONGITUDE, longitudesSet);
+		editor.putStringSet(APP_PREFERENCES_NAME, nameTargetsSet);
 		editor.apply();
-
 	}
 
 	//Сохранение точек в массивы
-	private void saveTargetsToSet(LatLng target) {
+	private void saveTargetsToSet(LatLng target, String nameTarget) {
 		Log.d("save_latitude", String.valueOf(target.latitude));
 		Log.d("save_longitude", String.valueOf(target.longitude));
+		Log.d("save_nameTarget", nameTarget);
 		latitudesSet.add(String.valueOf(target.latitude));
 		longitudesSet.add(String.valueOf(target.longitude));
+		nameTargetsSet.add(nameTarget);
 	}
 }
