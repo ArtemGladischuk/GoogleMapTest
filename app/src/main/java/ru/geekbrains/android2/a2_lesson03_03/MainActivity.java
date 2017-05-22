@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
 	/* Private fields for store links to UI components */
 	private GoogleMap mvMap = null;
@@ -48,10 +48,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 	EditText editTextName = null;
 	EditText editTextLatitude = null;
 	EditText editTextLongitude = null;
-
-	public GoogleMap getMvMap() {
-		return mvMap;
-	}
 
 	/**
 	 * Called when the activity is starting (for more details,
@@ -129,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		/* Disable my-location button */
 		map.getUiSettings().setMyLocationButtonEnabled(true);
 		mvMap = map;
+		mvMap.setOnMapLongClickListener(this);
 
 		//После готовности карты загружаем точки
 		loadPoint();
@@ -205,42 +202,45 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		/* Menu "Add Point" */
 		if (item.getItemId() == R.id.menu_map_point_new) {
 
-			//Создание диалогового окна с возможностью ввода координат точки.
-			LayoutInflater inflater = LayoutInflater.from(this);
-			View dialogView = inflater.inflate(R.layout.dialog, null);
-
-			//Cоздаем AlertDialog
-			AlertDialog.Builder mDialogNBuilder = new AlertDialog.Builder(this);
-
-			//Прикручиваем лейаут к алерту
-			mDialogNBuilder.setView(dialogView);
-
-			//Инициализация компонентов
-			editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
-			editTextLatitude = (EditText) dialogView.findViewById(R.id.editTextLatitude);
-			editTextLongitude = (EditText) dialogView.findViewById(R.id.editTextLongitude);
-
-			editTextLatitude.setText(String.valueOf(mvMap.getCameraPosition().target.latitude));
-			editTextLongitude.setText(String.valueOf(mvMap.getCameraPosition().target.longitude));
-
-			mDialogNBuilder
-					.setCancelable(false)
-					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							LatLng target = new LatLng(Float.valueOf(editTextLatitude.getText().toString()),
-									Float.valueOf(editTextLongitude.getText().toString()));
-							String nameTarget = editTextName.getText().toString();
-
-							makeMarker(target, nameTarget);
-							saveTargetsToSet(target, nameTarget);
-						}
-					});
-			AlertDialog alertDialog = mDialogNBuilder.create();
-			alertDialog.show();
-
+			createAlertDialog(mvMap.getCameraPosition().target);
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void createAlertDialog(LatLng target){
+		//Создание диалогового окна с возможностью ввода координат точки.
+		LayoutInflater inflater = LayoutInflater.from(this);
+		View dialogView = inflater.inflate(R.layout.dialog, null);
+
+		//Cоздаем AlertDialog
+		AlertDialog.Builder mDialogNBuilder = new AlertDialog.Builder(this);
+
+		//Прикручиваем лейаут к алерту
+		mDialogNBuilder.setView(dialogView);
+
+		//Инициализация компонентов
+		editTextName = (EditText) dialogView.findViewById(R.id.editTextName);
+		editTextLatitude = (EditText) dialogView.findViewById(R.id.editTextLatitude);
+		editTextLongitude = (EditText) dialogView.findViewById(R.id.editTextLongitude);
+
+		editTextLatitude.setText(String.valueOf(target.latitude));
+		editTextLongitude.setText(String.valueOf(target.longitude));
+
+		mDialogNBuilder
+				.setCancelable(false)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						LatLng target = new LatLng(Float.valueOf(editTextLatitude.getText().toString()),
+								Float.valueOf(editTextLongitude.getText().toString()));
+						String nameTarget = editTextName.getText().toString();
+
+						makeMarker(target, nameTarget);
+						saveTargetsToSet(target, nameTarget);
+					}
+				});
+		AlertDialog alertDialog = mDialogNBuilder.create();
+		alertDialog.show();
 	}
 
 	//Создание и добавление маркера на карту
@@ -273,5 +273,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 		latitudesSet.add(String.valueOf(target.latitude));
 		longitudesSet.add(String.valueOf(target.longitude));
 		nameTargetsSet.add(nameTarget);
+	}
+
+	@Override
+	public void onMapLongClick(LatLng latLng) {
+		createAlertDialog(latLng);
 	}
 }
