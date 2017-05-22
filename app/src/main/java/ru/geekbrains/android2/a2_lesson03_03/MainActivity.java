@@ -206,8 +206,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 			mDialogNBuilder.setView(dialogView);
 
 			//Инициализация компонентов
-			editTextLatitude = (EditText) findViewById(R.id.editTextLatitude);
-			editTextLongitude = (EditText) findViewById(R.id.editTextLongitude);
+			editTextLatitude = (EditText) dialogView.findViewById(R.id.editTextLatitude);
+			editTextLongitude = (EditText) dialogView.findViewById(R.id.editTextLongitude);
 
 			editTextLatitude.setText(String.valueOf(mvMap.getCameraPosition().target.latitude));
 			editTextLongitude.setText(String.valueOf(mvMap.getCameraPosition().target.longitude));
